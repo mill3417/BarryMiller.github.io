@@ -1,0 +1,9 @@
+/** Creating and Displaying My Own Table in a Database With my Favorite Books (May 24, 2022) **/
+
+
+CREATE TABLE my_fav_books (id Integer Primary Key, name text, rating integer);
+Insert Into my_fav_books Values (1, "Green Eggs and Ham", 5);
+Insert Into my_fav_books Values (2, "To Kill a Mockingbird", 4);
+Insert Into my_fav_books Values (3, "People's Choice Awards", 3);
+select *
+from my_fav_books
