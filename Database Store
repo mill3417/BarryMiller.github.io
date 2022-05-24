@@ -1,0 +1,27 @@
+/** Creating My Own Database Store, Ordering Items by Price, and Selecting a T-Shirt (May 24, 2022) **/
+
+
+
+create table my_store (id integer primary key, item text, quantity integer, material text, color text, price integer);
+
+insert into my_store values (1, "T_Shirt", 20, "Cotton", "Red", 1);
+insert into my_store values (2, "Long_Sleeve_Shirt", 13, "Cotton", "Blue", 3);
+insert into my_store values (3, "Under_Shirt", 12, "Cotton", "Orange", 5);
+insert into my_store values (4, "Shorts", 7, "Cotton", "Red", 9);
+insert into my_store values (5, "Pants", 12, "Cotton", "Red", 7);
+insert into my_store values (6, "Underwear", 7, "Cotton", "Green", 9);
+insert into my_store values (7, "Swim_Truncks", 8, "Polyester", "Pink", 11);
+insert into my_store values (8, "Swim_Suit", 9, "Polyester", "White", 15);
+insert into my_store values (9, "Socks", 3, "Wool", "Black", 12);
+insert into my_store values (10, "Shoes", 17, "Leather", "Grey", 14);
+insert into my_store values (11, "Sandals", 14, "Leather", "Indigo", 8);
+insert into my_store values (12, "Scarf", 7, "Silk", "Rose", 10);
+insert into my_store values (13, "Hat", 18, "Hemp", "Blue", 6);
+insert into my_store values (14, "Sunglasses", 23, "Plastic", "Black", 4);
+insert into my_store values (15, "Jewelry", 4, "Silver", "Silver", 2);
+
+Select *
+from my_store
+where item = "T_Shirt"
+Order by price;
+
