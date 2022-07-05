@@ -1,0 +1,203 @@
+-- Arithmetic and Order of Operations
+
+-- Select first_name, last_name, points, points + 10 as discount
+-- From customers;
+
+Select last_name, 
+		first_name, 
+        points, 
+        points * 10 + 100 as discount1,
+        points + 10 * 100 as discount2,
+        (points + 10) * 100 as discount3
+From customers;
+
+
+
+-- Excersie: Return all the producst (name, unit price, and new price (unit price * 1.1))
+
+Select name, 
+		unit_price, 
+		unit_price * 1.1 as new_price
+From products;
+
+
+
+-- Focusing on the where clause and comparison operators
+
+-- Select *
+-- From customers
+-- Where points > 3000;
+
+-- Select *
+-- From customers
+-- Where state = 'VA';
+-- Where state != 'VA';
+
+Select *
+From customers
+Where birth_date > '1990-01-01';
+
+
+
+-- Excercise: Get the orders placed this year (2019)
+
+Select *
+From orders
+Where order_date >= '2019-01-01';
+
+
+
+-- Using the AND/OR operators and Negation 
+
+-- Select *
+-- From customers
+-- Where birth_date > '1990-01-01' AND points > 1000;
+
+-- Select *
+-- From customers
+-- Where birth_date > '1990-01-01' OR points > 1000 AND
+		-- state = 'VA';
+        
+Select *
+From customers
+Where Not (birth_date > '1990-01-01' OR points > 1000);
+
+
+
+-- Exercise: From the order_items table, get the items for order #6 
+-- where the total price is greater than 30
+
+Select order_id, quantity, unit_price, unit_price * quantity as total_price
+From order_items
+Where order_id = 6 and (unit_price * quantity) > 30;
+
+
+
+-- Using the IN, Between, and Like operators
+
+-- Select *
+-- From customers
+-- Where state = 'VA' OR state = 'GA' OR state = 'FL';
+
+-- Select *
+-- From customers
+-- Where state IN ('VA', 'FL', 'GA');
+
+-- Select *
+-- From customers
+-- Where state NOT IN ('VA', 'FL', 'GA');
+
+
+-- Using the Between operator
+-- Select * 
+-- From customers
+-- Where points >= 1000 AND points <= 3000;
+
+-- Select *
+-- From customers
+-- where points BETWEEN 1000 and 3000;
+
+
+-- Exercise: Return Customers Born between 01/01/1990 and 01/01/2000
+-- Select * 
+-- From customers
+-- Where birth_date BETWEEN '1990-01-01' AND '2000-01-01';
+
+
+-- Select *
+-- From customers
+-- % any number of characters
+-- _ single character
+-- Where last_name Like 'b%' -- starts with b;
+-- Where last_name Like '%b' -- ends with b;
+-- Where last_name Like '%b%' -- contains b;
+-- Where last_name Like '_____y' -- 6 characters long and ends with y;
+-- Where last_name Like 'b____y' -- 6 characters long; starts with b and ends with y;
+
+-- Excercise: Get the customers whose addresses contains Trail or Avenue
+-- whose phone numbers end with 9
+
+-- Select *
+-- From customers
+-- where address like '%trail%' OR address like '%avenue%';
+
+-- Select *
+-- From customers
+-- where phone like '%9';
+
+
+
+-- Exercise: Return products with quantity in stock equal to 49, 38, 72
+
+-- Select *
+-- From products
+-- Where quantity_in_stock = 49 OR quantity_in_stock = 38 OR quantity_in_stock = 72;
+
+Select *
+From products
+Where quantity_in_stock IN (49, 38, 72);
+
+
+
+-- Using the REGEXP and NUll operators
+
+-- Select *
+-- From customers
+-- Where last_name REGEXP '^field'; -- Last name begins with field
+-- Where last_name REGEXP 'field$'; -- Last name ends with field
+-- Where last_name REGEXP 'field|mac|rose'; -- last name contains field, mac, or rose
+-- Where last_name REGEXP '^field|mac|rose$'; -- last name starts with field, contains mac, or ends with rose
+-- Where last_name REGEXP '[gim]e'; -- last name that has ge, ie, or me in it
+-- Where last_name REGEXP '[a-h]e'; -- last name has ae, be, ce, de, ee, fe, ge, or he in it
+
+-- Excercise: Get the customers whose first names are Elka or Ambur
+-- Last name ends with Ey or On
+-- Last name starts with My or contains Se
+-- Last name contain B followed by R or U
+
+-- Select *
+-- From customers
+-- Where frist_name REGEXP 'elka|ambur';
+-- Where last_name REGEXP 'ey$|on$';
+-- Where last_name REGEXP '^my|se;
+-- Where last_name 'b[ru]';
+
+
+-- Using the Null Operator
+
+-- Select *
+-- From customers
+-- Where phone is NULL;
+-- Where phone is NOT Null;
+
+-- Exercise: Get the orders that are not shipped
+-- Select *
+-- From orders
+-- Where shipped_date is NULL;
+
+
+
+
+-- Using the Order By clause
+
+-- Select * 
+-- From customers
+-- Order By state DESC, first_name DESC;
+
+-- Select *, quantity * unit_price AS total_price
+-- From order_items
+-- Where order_id = 2
+-- Order by total_price DESC;
+
+
+-- Using the Limit clause
+
+-- Select *
+-- From customers
+-- Limit 6, 3;
+
+-- Exercise: Get the top three loyal customers
+Select *
+From customers
+Order by points DESC
+Limit 3;
