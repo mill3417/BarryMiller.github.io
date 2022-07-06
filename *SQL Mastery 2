@@ -1,0 +1,354 @@
+-- Using Joins, Unions, and Aliases (Inner, Outer, Self, Natural, and Cross)
+-- Use sql_store;
+
+-- Select order_id, o.customer_id, first_name, last_name
+-- From orders o
+-- Inner Join customers c
+	-- On o.customer_id = c.customer_id;
+    
+    
+    
+-- Exercise: Join order_items table with the products table and only return
+-- order_id, product_id, quantity, and unit_price
+
+-- Select order_id, o.product_id, quantity, o.unit_price
+-- From order_items o
+-- Inner Join products p
+-- Where o.product_id = p.product_id;
+
+
+
+
+-- Joining Databases
+-- Use sql_store;
+
+-- Select *
+-- From order_items oi
+-- Join sql_inventory.products p
+	-- ON oi.product_id = p.product_id;
+    
+-- Self Joins
+-- use sql_hr;
+
+-- Select 
+	-- e.employee_id
+    -- e.first_name
+    -- m.first_name AS manager
+-- From employees e
+-- Join employees m
+	-- On e.reports_to = m.employee_id;
+    
+    
+    
+-- Joining Multiple Tables
+
+-- Use sql_store;
+
+-- Select 
+	-- o.order_id,
+    -- o.order_date,
+    -- c.first_name,
+    -- c.last_name,
+    -- os.name AS status
+-- From orders o
+-- Join customers c
+	-- On o.customer_id = c.customer_id
+-- Join order_statuses os
+	-- On o.status = os.order_status_id;
+    
+
+
+-- Exercise: Join payments, payment_methods, and clients tables.
+-- Return on the client_id, invoice_id, date, amount, and payment_method
+-- Use sql_invoicing;
+
+-- Select 
+		-- p.date,
+        -- p.invoice_id,
+        -- p.amount,
+        -- c.name, 
+		-- pm.name as 'payment method'
+-- From payments p
+-- Join payment_methods pm
+	-- On p.payment_method = pm.payment_method_id
+-- Join clients c
+	-- On c.client_id = p.client_id;
+    
+    
+    
+    
+-- Compound Join Conditions (Composite Primary Keys)
+
+-- Use sql_store;
+
+-- Select *
+-- From order_items oi
+-- Join order_item_notes oin
+	-- On oi.order_id = oin.order_id
+    -- And oi.product_id = oin.product_id;
+    
+    
+    
+-- Implicit/Explicit Joins
+
+-- Use sql_store;
+
+-- Select *
+-- From orders o, customers c
+-- Where o.customer_id = c.customer_id
+
+-- Select *
+-- From orders o
+-- Join customers c
+	-- On o.customer_id = c.customer_id
+    
+    
+    
+    
+-- Outer Joins (Left and Right)
+
+-- Select 
+	-- c.customer_id,
+    -- c.first_name,
+    -- o.order_id
+-- From customers c
+-- Join orders o
+	-- On c.customer_id = o.customer_id
+-- Order By c.customer_id;
+
+-- Select 
+	-- c.customer_id,
+    -- c.first_name,
+    -- o.order_id
+-- From customers c
+-- Left Join orders o
+	-- On c.customer_id = o.customer_id
+-- Order By c.customer_id
+
+
+
+-- Exercise: Join the products table with the order_items table
+
+-- Select p.product_id, p.name, quantity
+-- From products p
+-- Left Join order_items oi
+	-- On oi.product_id = p.product_id
+-- Order by p.product_id;
+
+
+
+
+-- Outer Joins between multiple tables
+
+-- Select
+	-- c.customer_id,
+    -- c.first_name,
+    -- o.order_id,
+    -- sh.name AS shipper
+-- From customers c
+-- Left Join orders o
+	-- On c.customer_id = o.customer_id
+-- Left Join shippers sh
+	-- On o.shipper_id = sh.shipper_id
+-- Order by c.customer_id
+
+
+
+
+-- Exercise: order_date, order_id, first_name, shipper, status. Return this information using Joins
+
+-- Select
+	-- order_date,
+    -- order_id,
+    -- first_name,
+    -- s.name AS shipper,
+	-- os.name AS status
+    -- From orders o
+   -- Left Join customers c
+	-- ON o.customer_id = c.customer_id
+-- Left Join order_statuses os
+	-- ON o.status = os.order_status_id
+-- Left Join shippers s
+	-- ON o.shipper_id = s.shipper_id
+-- Order by status;
+
+
+
+-- Self Left Outer join
+
+-- Use sql_hr;
+
+-- Select 
+	-- e.employee_id,
+    -- e.first_name,
+    -- m.first_name AS manager
+-- From employees e
+-- Left Join employees m
+	-- ON e.reports_to = m.employee_id;
+    
+    
+    
+    
+    -- Using the "Using" Clause
+-- Use sql_store;
+
+-- Select
+		-- o.order_id,
+		-- o.order_id,
+        -- c.first_name
+-- From orders o
+-- Join customers c
+		-- ON o.customer_id = c.customer_idc.first_name
+-- From orders o
+-- Join customers c
+		-- ON o.customer_id = c.customer_ido.order_id,
+        -- c.first_name
+-- From orders o
+-- Left Join customers c
+		-- ON o.customer_id = c.customer_id;
+        -- Using (customer_id)
+-- Left Join shippers sh
+		-- Using (shipper_id)
+
+
+-- Select *
+-- From order_items oi
+-- Join order_item_notes oin
+	-- ON oi.order_id = oin.order_id AND oi.product_id = oin.product_id
+    -- Using (order_id, product_id);
+    
+    
+    
+    
+-- Exercise: Select the payments from the payments table 
+-- and returna table with date, client, amount, and payment method
+
+-- Use sql_invoicing;
+
+-- Select
+	-- p.date,
+    -- c.name AS client,
+    -- amount,
+    -- pm.name as 'payment method'
+-- From payments p
+-- Left Join clients c
+	-- Using (client_id)
+-- Left Join payment_methods pm
+	-- ON p.payment_method = pm.payment_method_id;
+        
+        
+        
+
+-- Natural Joins
+
+-- Use sql_store;
+
+-- Select 
+	-- o.order_id,
+    -- c.first_name
+-- From orders o
+-- Natural Join customers c;
+
+
+-- Cross Joins (Explicit/Implicit)
+-- Use sql_store;
+
+-- Select 
+	-- c.first_name as customer,
+    -- p.name as product
+-- From customers c
+-- Cross Join products p
+-- Order by c.first_name;
+
+    
+    
+-- Select 
+	-- c.first_name as customer,
+    -- p.name as product
+-- From customers c, products p
+-- Order by c.first_name;
+
+
+
+
+-- Exercise: Do a cross join between shippers and products
+-- using the implicit and explicit syntax
+
+-- Select
+	-- s.name as shipper
+    -- p.name as product
+-- From shippers s
+-- Cross Join products p;
+
+-- Select 
+	-- s.name as shipper
+    -- p.name as product
+-- From shippers s, products p;
+
+
+
+
+-- Unions
+
+
+-- Select
+	-- order_id,
+    -- order_date,
+    -- 'Active' as Status
+-- From orders
+-- Where order_date >= '2019-01-01'
+
+-- Union
+
+-- Select
+	-- order_id,
+    -- order_date,
+    -- 'Archived' as Status
+-- From orders
+-- Where order_date < '2019-01-01';
+
+
+-- Select first_name
+-- From customers;
+
+-- Union
+
+-- Select name
+-- From shippers;
+
+
+
+-- Exercise: Replicate report. Colums customer_id, first_name, points, type
+
+Select 
+	customer_id,
+    first_name,
+    points,
+    'Bronze' as type
+From customers
+Where points < 2000
+    
+Union
+
+Select 
+	customer_id,
+    first_name,
+    points,
+    'Silver' as type
+From customers
+Where points Between 2000 and 3000
+    
+Union
+
+Select 
+	customer_id,
+    first_name,
+    points,
+    'Gold' as type
+From customers
+Where points > 3000
+Order by first_name;
+
+
+
+
