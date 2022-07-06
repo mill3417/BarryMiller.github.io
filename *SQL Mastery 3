@@ -1,0 +1,152 @@
+-- Inserting a Row into a table
+
+-- Insert Into customers (first_name, last_name, birth_date, address, city, state)
+-- Values (
+	-- 'John', 
+    -- 'Smith', 
+    -- '1990-01-01',
+    -- 'address',
+    -- 'city',
+    -- 'CA');
+-- Select *
+-- From customers;
+
+
+
+
+-- Insert into shippers (name)
+-- Values ('Shipper1'),
+		-- ('Shipper2'),
+        -- ('Shipper3');
+
+-- Select *
+-- From shippers;
+
+
+
+
+-- Exercise: Insert three rows in the products table
+
+-- Insert into products (name, quantity_in_stock, unit_price)
+-- Values
+	-- ('Product1', 10, 1.95),
+    -- ('Product2', 11, 1.95),
+    -- ('Product3', 12, 1.95);
+    
+-- Select *
+-- From products
+
+
+
+
+-- Inserting Hierarchical Rows
+
+-- Insert into orders (customer_id, order_date, status)
+-- Values 
+	-- (1, '2019-01-02', 1);
+
+-- Insert into order_items
+-- Values (Last_Insert_ID(), 1, 1, 2.95),
+		-- (Last_Insert_ID(), 2, 1, 3.95);
+        
+-- Select *
+-- From orders;
+
+
+
+
+
+-- Creating a Copy of a Table
+
+-- Create Table order_archived AS
+-- Select * From orders;
+
+
+-- Copying a subset of information into a table
+-- Insert into order_archived
+-- Select *
+-- From orders
+-- Where order_date < '2019-01-01'
+
+
+-- Use sql_invoicing;
+
+-- Create Table invoices_archived AS
+-- Select
+	-- i.invoice_id,
+    -- i.number,
+    -- c.name as client,
+    -- i.invoice_total,
+    -- i.payment_total,
+    -- i.invoice_date,
+    -- i.payment_date,
+    -- i.due_date
+-- From invoices i
+-- Join clients c
+	-- Using (client_id)
+-- Where payment_date is not null;
+
+
+
+
+-- Updating Single Rows
+
+-- Update invoices
+-- Set payment_total = 10, payment_date = '2019-03-01'
+-- Where invoice_id = 1
+
+
+
+-- Updating Multiple Rows
+
+-- Update invoices
+-- Set
+	-- payment_total = invoice_total * 0.5,
+    -- payment_date = due_date
+-- Where client_id  IN (3, 4);
+
+
+-- Exercise Give any customer born before 1990 50 extra points
+
+-- Use sql_store;
+
+-- Update customers
+-- Set points = points + 50
+-- Where birth_date < '1990-01-01'
+
+-- Select *
+-- From customers;
+
+
+-- Using Subqueries in an Update
+
+-- Update invoices
+-- Set
+	-- payment_total = invoice_total * 0.5,
+	-- payment_date = due_date
+-- Where client_id IN 
+				-- (Select client_id
+				-- From clients
+				-- Where state IN ('CA', 'NY'));
+
+
+-- Exercise: Update the comments for customers that have more than 3000 points, regarded as gold customers
+
+-- Update orders
+-- Set comments = 'Gold Customer'
+-- Where customer_id IN (
+						-- Select customer_id
+						-- From customers
+						-- Where points > 3000);
+                        
+-- Select *
+-- From orders;
+
+
+-- Deleting Rows
+
+-- Delete From invoices
+-- Where client_id = (
+					-- Select client_id
+					-- From clients
+					-- Where name = 'Myworks');
