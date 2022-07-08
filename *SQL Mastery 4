@@ -1,0 +1,137 @@
+-- Aggregate Functions
+
+-- Max()
+-- Min()
+-- Avg()
+-- Sum()
+-- Count()
+
+-- use sql_invoicing;
+
+-- Select
+	-- Max(invoice_total) As highes,
+	-- Min(invoice_total) As lowest,
+	-- Avg(invoice_total) As average,
+	-- Sum(invoice_total) As total,
+	-- Count(invoice_total * 1.1) As number_of_invoices,
+	-- Count(payment_date) As count_of_payments,
+	-- Count(*) As total_records,
+    -- Count(Distinct client_id) As client
+-- From invoices
+-- Where invoice_date > '2019-07-01';
+
+
+
+-- Exercise: Write a query on the invoices table to return total_sales, total_payments, and what_we_expect
+-- for the first half and second half of 2019. Include the total for the whole year
+
+
+-- Use sql_invoicing;
+
+-- Select 
+	-- 'First half of 2019' as date_range,
+	-- Sum(invoice_total) As total_sales, 
+	-- Sum(payment_total) As total_payment, 
+	-- Sum(invoice_total - payment_total) as what_we_expect
+-- From invoices
+-- Where invoice_date Between '2019-01-01' and '2019-06-30'
+-- Union
+-- Select 
+	-- 'Second half of 2019' as date_range,
+	-- Sum(invoice_total), 
+	-- Sum(payment_total), 
+	-- Sum(invoice_total - payment_total)
+-- From invoices
+-- Where invoice_date >= '2019-07-01'
+-- Union
+-- Select 
+	-- 'Total' as date_range,
+	-- Sum(invoice_total), 
+	-- Sum(payment_total), 
+	-- Sum(invoice_total - payment_total)
+-- From invoices;
+
+
+
+-- The Group By Clause
+
+-- Select
+	-- state,
+    -- city,
+	-- Sum(invoice_total) As total_sales
+-- From invoices i
+-- Join clients c Using (client_id)
+-- Group By state, city
+
+
+
+-- Exercise: Return the date, payment_method, and total_payments from the payments table
+
+-- Select
+	-- date,
+    -- pm.name AS payment_method,
+    -- Sum(amount) As total_payments
+-- From payments p
+-- Join payment_methods pm
+	-- On p.payment_method = pm.payment_method_id
+-- Group by date, payment_method
+-- Order by date
+
+
+
+
+-- Using the Having Clause
+
+-- Select
+	-- client_id,
+    -- Sum(invoice_total) As total_sales,
+    -- Count(*) As number_of_invoices
+-- From invoices
+-- Group by client_id
+-- Having total_sales > 500 and number_of_invoices > 5
+
+
+
+-- Exercise: Get the customers located in Virginia who spent more than $100
+
+-- Use sql_store;
+
+-- Select 
+	-- c.customer_id,
+    -- c.first_name,
+    -- c.last_name,
+    -- Sum(oi.quantity * oi.unit_price) As total_sales
+-- From customers c
+-- Join orders o Using (customer_id)
+-- Join order_items oi Using (order_id)
+-- Where state = 'VA'
+-- Group by c.customer_id, c.first_name, c.last_name
+-- Having total_sales > 100;
+
+
+
+-- Using the ROLLUP Operator
+
+-- Use sql_invoicing;
+
+-- Select
+	-- state,
+    -- city,
+    -- Sum(invoice_total) As total_sales
+-- From invoices i
+-- Join clients c Using (client_id)
+-- Group by state, city WITH ROLLUP
+
+
+
+-- Exercise: Produce a report that returns the payment_method and the total
+
+-- Select
+	-- pm.name as payment_method,
+    -- Sum(amount) as total
+-- From payments p
+-- Join payment_methods pm
+	-- On p.payment_method = pm.payment_method_id
+-- Group by pm.name with rollup
+
+
