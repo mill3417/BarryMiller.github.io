@@ -1,0 +1,224 @@
+-- Writing Complex Queries: Subqueries
+
+-- Find products that are more expensive than Lettuce (id = 3)
+
+-- use sql_store;
+
+-- Select *
+-- From products
+-- Where unit_price > (
+						-- Select unit_price 
+						-- From products 
+						-- Where product_id = 3);
+
+
+-- Exercise: In sql_hr database, find the employees who earn more than average
+
+-- use sql_hr;
+
+-- Select *
+-- From employees
+-- Where salary > (
+				-- Select Avg(salary) 
+				-- From employees);
+                
+
+-- Find the products that have never been ordered
+
+-- Use sql_store;
+
+-- Select *
+-- From products
+-- Where product_id NOT IN (
+						-- Select Distinct product_id
+                        -- From order_items);
+                        
+                        
+                        
+-- Exercise: Find clients without invoices;
+
+-- Use sql_invoicing;
+
+-- Select *
+-- From clients
+-- Where client_id NOT IN (
+		-- Select Distinct client_id
+		-- From invoices);
+        
+        
+-- Subqueries vs. Joins (Focus on Relevance of coding)
+
+-- Use sql_invoicing;
+
+-- Select *
+-- From clients
+-- Where client_id NOT IN (
+		-- Select Distinct client_id
+		-- From invoices);
+        
+        
+-- Select *
+-- From clients
+-- Left Join invoices Using (client_id)
+-- Where invoice_id IS NULL;
+
+
+
+-- Exercise: Find customers who ordered Lettuce (id = 3)
+-- Select customer_id, first_name, last_name
+-- Subquery and Joins
+
+
+-- Use sql_store;
+
+-- Select *
+-- From customers
+-- Where customer_id IN (
+	-- Select o.customer_id
+    -- From order_items oi
+    -- Join orders o Using (order_id)
+    -- Where product_id = 3);
+    
+-- Select
+	-- Distinct c.customer_id,
+    -- first_name,
+    -- last_name
+-- From customers c
+-- Left Join orders o Using (customer_id)
+-- Left Join order_items oi Using (order_id)
+-- Where oi.product_id = 3
+-- Order by customer_id;
+
+
+
+-- Select invoices that are larger than all invoices of client 3; Use the MAX/ALL keyword
+
+-- Use sql_invoicing;
+
+-- Select *
+-- From invoices
+-- Where invoice_total > (
+	-- Select Max(invoice_total)
+	-- From invoices
+	-- Where client_id = 3);
+    
+    
+-- Select *
+-- From invoices
+-- Where invoice_total > ALL (
+	-- Select invoice_total
+    -- From invoices
+    -- Where client_id = 3);
+    
+    
+-- Select clients with at least two invoices using the ANY keyword
+
+
+-- Select *
+-- From clients
+-- Where client_id = ANY (
+	-- Select client_id
+	-- From invoices
+	-- Group by client_id
+	-- Having Count(*) >= 2);
+    
+-- Select employees whose salary is above the average in their office. Use a Correlated Subquery
+
+-- Use sql_hr;
+
+-- Select *
+-- From employees e
+-- Where salary > (
+	-- Select Avg(salary)
+    -- From employees
+    -- Where office_id = e.office_id);
+    
+    
+-- Exercise: Get invoices that are larger than the clients average invoice amount
+
+-- Use sql_invoicing;
+
+-- Select *
+-- From invoices i
+-- Where invoice_total > (
+	-- Select Avg(invoice_total)
+	-- From invoices
+	-- Where client_id = i.client_id);
+    
+    
+-- Select clients that have an invoice using the EXISTS Operator (More Efficient to use)
+
+-- Select *
+-- From clients
+-- Where client_id IN (
+	-- Select Distinct client_id
+    -- From invoices)
+    
+
+
+-- Select * 
+-- From clients c
+-- Where EXISTS (
+	-- Select client_id
+    -- From invoices
+    -- Where client_id = c.client_id);
+    
+    
+
+-- Exercise: Find the products that have never been ordered
+
+-- Use sql_store;
+
+-- Select *
+-- From products p
+-- Where NOT Exists (
+	-- Select product_id
+	-- From order_items
+    -- Where product_id = p.product_id);
+    
+    
+    
+    
+-- Subqueries in the SELECT Clause --
+
+-- Use sql_invoicing;
+
+-- Select 
+	-- invoice_id,
+    -- invoice_total,
+    -- (Select Avg(Invoice_total) From invoices) As invoice_average,
+    -- invoice_total - (Select invoice_average) As difference
+-- From invoices;
+
+
+
+
+-- Exercise: Write a query to return a report of client_id, total_sales, average_sales, and the difference --
+
+-- Select 
+	-- client_id,
+    -- name,
+    -- (Select Sum(invoice_total)
+		-- From invoices 
+        -- Where client_id = c.client_id) AS total_sales,
+	-- (Select Avg(invoice_total) From invoices) AS  average,
+    -- (Select total_sales - average) AS difference
+-- From clients c
+
+
+
+-- Subqueries in the FROM Statement
+
+Select *
+From (
+	Select 
+	    client_id,
+		name,
+		(Select Sum(invoice_total)
+		 From invoices 
+         Where client_id = c.client_id) AS total_sales,
+	 (Select Avg(invoice_total) From invoices) AS  average,
+     (Select total_sales - average) AS difference
+	From clients c) AS sales_summary
+Where total_sales IS NOT NULL;
+
