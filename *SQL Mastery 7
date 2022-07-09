@@ -1,0 +1,98 @@
+-- Creating a VIEW --
+
+-- Use sql_invoicing;
+-- Create View sales_by_client AS
+-- Select 
+	-- c.client_id,
+    -- c.name,
+    -- Sum(invoice_total) AS total_sales
+-- From clients c
+-- Join invoices i Using (client_id)
+-- Group by c.client_id, c.name;
+
+-- Select *
+-- From sales_by_client
+-- Where total_sales > 500;
+
+-- Select *
+-- From sales_by_client
+-- Join clients Using(client_id)
+
+
+-- Exercise: Create a view to see the balance for each client.
+-- Call the view clients_balance and return client_id, name, balance
+
+-- Create View clients_balance AS
+-- Select
+	-- c.client_id,
+    -- c.name,
+    -- Sum(invoice_total - payment_total) as balance
+-- From clients c
+-- Left Join invoices i Using(client_id)
+-- Group by client_id, name;
+
+
+-- Dropping or Altering Views --
+
+-- Drop View sales_by_client
+
+-- Create or Replace View sales_by_client AS
+-- Select
+	-- c.client_id,
+    -- c.name,
+    -- Sum(invoice_total) AS total_sales
+-- From clients c
+-- Join invoices i Using(client_id)
+-- Group by client_id, name
+-- Order by total_sales DESC;
+
+
+
+
+
+-- Updatable Views (If the view doesn't incorporate Distinct, Aggregate Function, Group By/ Having Clauses, or Unions)  --
+
+-- Create or Replace View invoices_with_balance AS
+-- Select 
+	-- invoice_id,
+    -- number,
+    -- client_id,
+    -- invoice_total,
+    -- payment_total,
+    -- invoice_total - payment_total AS balance,
+    -- invoice_date,
+    -- due_date,
+    -- payment_date
+-- From invoices
+-- Where (invoice_total - payment_total) > 0;
+-- Select *
+-- From invoices_with_balance;
+
+-- Delete From invoices_with_balance
+-- Where invoice_id = 1;
+
+-- Update invoices_with_balance
+-- Set due_date = Date_add(due_date, interval 2 day)
+-- Where invoice_id = 2;
+
+
+-- The WITH OPTION CHECK Clause (Save rows from being removed from table via updates to the table) --
+
+ -- Update invoices_with_balance
+-- Set payment_total = invoice_total
+-- Where invoice_id = 2;
+
+-- Create or Replace View invoices_with_balance AS
+-- Select 
+	-- invoice_id,
+    -- number,
+    -- client_id,
+    -- invoice_total,
+    -- payment_total,
+    -- invoice_total - payment_total AS balance,
+    -- invoice_date,
+    -- due_date,
+    -- payment_date
+-- From invoices
+-- Where (invoice_total - payment_total) > 0;
+-- With Check Option
