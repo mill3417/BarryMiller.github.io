@@ -1,0 +1,150 @@
+-- Numeric Functions --
+
+-- Select Round (5.7345, 2); Round to the nearest two decimal places
+-- Select Truncate (5.7345,2); Removes anything after two places past the decimal
+-- Select Ceiling (5.7); returns the smallest integer that is greater than or equal to the referenced number
+-- Select Floor (5.2); returns the largest integer that is less than or equal to the referenced number
+-- Select ABS (5.2); returns the absolute value of a number
+-- Select RAND(); returns a random value between zero and 1
+
+
+
+-- String Functions --
+
+-- Select Length('sky'); returns the number of characters in a string
+-- Select UPPER('sky'); returns all caps for a string
+-- Select LOWER('SKY'); returns all lower case for a sting
+-- Select LTrim('      sky'); removes leading whitespace
+-- Select RTrim('sky       '); removes trailing whitespace
+-- Select Trim('       sky    '); removes any leading or trailing white space
+-- Select Left('Kindergarten', 4); returns the left 4 characters of a string
+-- Select Right('Kindergarten', 6); returns the right 6 characters of a string
+-- Select Substring('Kindgarten', 3); returns every character starting with the 3rd character and after
+-- Select Substring('Kindgarten', 3, 5); return the next 5 characters starting with the third character
+-- Select Locate('n', 'Kindergarten'); returns the position of the first appeareance of a character or sequence of characters
+-- Select Replace('Kindergarten', 'garten', 'garden');
+			-- Arugument order [string of concern, sequence to be replaced, sequence that will replace]
+-- Select Concat('first', 'last'); returns two string that have been merge together
+
+-- Use sql_store;
+-- Select Concat(first_name, ' ', last_name) AS full_name
+-- From customers;
+
+
+
+-- Date and Time Function --
+
+-- Select Now(), Curdate(), curtime(); returns current date and time, current date, and current time
+-- Select Year(Now()); to get the current year
+-- Select Month(Now()); to get the current month
+-- Select Day(Now()); to get the current day date
+-- Select Hour(Now()); to get the current hour
+-- Select Minute(Now()); to get the current minute
+-- Select Second(Now()); to get the current second
+-- Select Dayname(Now()); to get the current day name as a string
+-- Select Monthname(Now()); to get the current month name as a string
+-- Select Extract(Year From Now());
+
+
+-- Exercise: Using a date function
+-- Use sql_store;
+-- Select *
+-- From orders
+-- Where Year(order_date) = '2019';
+
+
+
+
+-- Formatting Dates and Times --
+-- Select Date_Format(Now(), '%y'); lowercase y will return a two digit year, uppercase Y will return a four digit year
+-- Select Date_Format(Now(), '%M'); lowercase  will return a two digit numeric month, uppercase M will return a string name
+-- Select Date_Format(Now(), '%D'); lowercase d will return a two digit numeric date, uppercase D will return a place number for a date (9th)
+-- Select Date_Format(Now(), '%M %D %Y');
+
+
+
+
+-- Calculate Dates and Time --
+
+-- Select Date_Add(Now(), Interval 1 day);
+-- Select Date_Add(Now(), Interval 1 year);
+-- Select Date_Add(Now(), Interval -1 year);
+-- Select Date_Sub(Now(), Interval 1 year);
+-- Select Datediff('2019-01-05', '2019-01-01');
+-- Select time_to_sec('09:00');
+-- Select time_to_sec('09:02') - time_to_sec('09:00');
+
+
+
+-- The IFNULL and COALESCE Functions
+
+-- Use sql_store;
+-- Select 
+	-- order_id,
+    -- Ifnull(shipper_id, 'Not Assigned') as shipper
+-- From orders;
+
+-- Use sql_store;
+-- Select 
+	-- order_id,
+    -- coalesce(shipper_id, comments, 'Not Assigned') as shipper
+-- From orders
+
+-- Select 
+	-- Concat(first_name, ' ', last_name) As customer,
+    -- Coalesce(phone, 'Unknown') AS phone
+-- From customers
+
+
+-- The IF Funtion (One test operator)
+
+-- Select
+	-- order_id,
+    -- order_date,
+    -- IF(Year(order_date) = Year(Now()), 'Active', 'Archived') As category 
+-- From orders
+
+
+
+
+-- Exercise: Return the values in the report using the IF function
+
+-- Select 
+	-- oi.product_id,
+    -- name,
+    -- Count(*) AS orders,
+    -- IF(Count(*) > 1, 'Many Times', 'Once') AS frequency
+-- From order_items oi
+-- Left Join products p Using(product_id)
+-- Group by oi.product_id, name
+
+
+
+
+
+
+-- The CASE Operator (More than one test operator) --
+
+-- Select
+	-- order_id,
+    -- CASE
+		-- When Year(order_date) = Year(now()) Then 'Active'
+        -- When Year(order_date) = Year(now()-1) Then 'Last Year'
+        -- When Year(order_date) < Year(now()-1) Then 'Archived'
+        -- Else 'Future'
+	-- End as category
+-- From orders
+
+
+-- Exercise: Generate a report of Gold, Silver, and Bronze Members
+
+Select
+	Concat(first_name, ' ', last_name) as customer,
+    points,
+    CASE
+		When points > 3000 Then 'Gold'
+        When points Between 2000 and 3000 Then 'Silver'
+        Else 'Bronze'
+	End as category
+From customers
+Order by points DESC
