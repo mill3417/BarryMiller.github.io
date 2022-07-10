@@ -1,0 +1,244 @@
+-- Creating a Stored Procedure --
+
+
+-- Basic Structure of a Stored Procedure --
+-- Delimiter $$
+-- Create Procedure get_clients()
+-- Begin
+	-- Select * From clients;
+-- End$$
+-- Delimiter ;
+
+
+
+-- use sql_invoicing;
+
+-- Delimiter $$
+-- Create Procedure get_clients()
+-- Begin
+	-- Select *
+	-- From clients;
+-- End$$
+
+-- Delimiter ;
+
+-- Call get_clients();
+
+
+
+-- Exercise: Create a stored procedure called get_invoices_with_balance --
+
+-- Delimiter $$
+-- Create Procedure get_invoices_with_balance()
+-- Begin
+	-- Select 
+		-- invoice_id,
+		-- invoice_total,
+		-- payment_total,
+		-- invoice_total - payment_total as balance
+	-- From invoices
+	-- Where invoice_total - payment_total > 0;
+-- End$$
+-- Delimiter ;
+
+
+
+-- Dropping or Editing a Stored Procedure --
+
+-- Drop Procedure If Exists get_clients;
+
+-- Delimiter $$
+-- Create Procedure get_clients()
+-- Begin
+	-- Select * From clients;
+-- End$$
+-- Delimiter ;
+
+
+-- Using Parameters in a Stored Procedure --
+
+
+-- Drop Procedure If Exists get_clients_by_state;
+
+-- Delimiter $$
+-- Create Procedure get_clients_by_state(state char(2))
+-- Begin
+	-- Select * 
+    -- From clients c
+    -- Where c.state = state;
+-- End$$
+-- Delimiter ;
+
+-- Call get_clients_by_state('ca');
+
+
+-- Exercise: Write a stored procedure to return invoices for a given client
+
+-- Drop Procedure IF Exists get_clients_by_state;
+-- Delimiter $$
+-- Create Procedure get_invoices_by_client(client_id int)
+-- Begin
+	-- Select *
+    -- From invoices i
+    -- Where i.client_id = client_id;
+-- End$$
+-- Delimiter ;
+
+
+-- Using Parameters with Default Values in Stored Procedures --
+
+    
+-- Drop Procedure IF Exists get_clients_by_state;
+
+-- Delimiter $$
+-- Create Procedure get_clients_by_state(state char(2))
+-- Begin
+	-- If state is NULL Then
+		-- Select * From clients;
+	-- Else 
+		-- Select *
+		-- From clients c
+		-- Where c.state = state;
+	-- END IF;
+-- End$$
+-- Delimiter ;
+
+
+-- Drop Procedure IF Exists get_clients_by_state;
+
+-- Delimiter $$
+-- Create Procedure get_clients_by_state(state char(2))
+-- Begin
+	-- Select *
+	-- From clients c
+	-- Where c.state = IFNULL(state, c.state);
+-- End$$
+-- Delimiter ;
+
+
+
+
+-- Exercise: Write a stored procedure called get_payments with two parameters
+-- client_id as an int and payment_method_id as a tinyint
+
+
+-- Drop Procedure if exists get_payments;
+
+-- Delimiter $$
+-- Create Procedure get_payments(client_id int, payment_method_id tinyint)
+-- Begin
+	-- Select *
+    -- From payments p
+    -- Where 
+		-- p.client_id = IFNULL(client_id, p.client_id) and
+		-- p.payment_method = IFNULL(payment_method_id, p.payment_method);
+-- End$$
+-- Delimiter ;
+
+-- call sql_invoicing.get_payments(Null, 2);
+
+
+
+
+-- Parameter Validation --
+-- Drop Procedure if Exists make_payment;
+-- Delimiter $$
+-- Create Procedure make_payment(invoice_id int, payment_amount decimal(9,2), payment_date date)
+-- Begin
+	-- IF payment_amount <= 0
+    -- Then Signal Sqlstate '22003' Set Message_Text = 'Invalid Payment Amount';
+	-- End If;
+	-- Update invoices i
+    -- Set 
+		-- i.payment_total = payment_amount,
+        -- i.payment_date = payment_date
+	-- Where i.invoice_id = invoice_id;
+-- End$$
+-- Delimiter ;
+
+-- call sql_invoicing.make_payment(2, 100, '2019-01-01');
+
+
+-- Drop Procedure if Exists get_unpaid_invoices_for_client;
+
+-- Delimiter $$
+-- Create Procedure get_unpaid_invoices_for_client(
+	-- client_id int, 
+    -- Out invoices_count int, 
+    -- Out invoices_total decimal(9,2))
+-- Begin
+	-- Select Count(*), Sum(invoice_total)
+    -- Into invoices_count, invoices_total
+    -- From invoices i
+    -- Where i.client_id = client_id
+		-- And payment_total = 0;
+-- End$$
+-- Delimiter ;
+
+
+
+
+-- User/ Session Variables --
+
+-- Set @invoices_count = 0;
+
+-- Local Variable
+
+-- Drop Procedure If Exists get_risk_factor;
+
+
+-- Delimiter $$
+-- Create Procedure get_risk_factor()
+-- Begin
+	-- Declare risk_factor decimal(9,2) default 0;
+    -- Declare invoices_total decimal(9,2);
+    -- Declare invoices_count int;
+	
+    -- Select Count(*), Sum(invoice_total)
+    -- Into invoices_count, invoices_total
+    -- From invoices;
+    
+    -- Set risk_factor = invoices_total/invoices_count * 5;
+	-- Select risk_factor;
+
+-- End$$
+-- Delimiter ;
+
+-- call sql_invoicing.get_risk_factor();
+
+
+
+
+-- Functions --
+
+-- Drop Function if Exists get_risk_factor_for_client;
+
+-- Delimiter $$
+-- Create Function get_risk_factor_for_client(client_id int)
+
+-- Returns Integer
+-- Deterministic
+-- Reads Sql Data
+-- Modifies Sql Data
+-- Begin
+	-- Declare risk_factor decimal(9,2) default 0;
+    -- Declare invoices_total decimal(9,2);
+    -- Declare invoices_count int;
+	
+    -- Select Count(*), Sum(invoice_total)
+    -- Into invoices_count, invoices_total
+    -- From invoices i
+    -- Where i.client_id = client_id;
+    
+    -- Set risk_factor = invoices_total/invoices_count * 5;
+
+	-- Return IFNull(risk_factor, 0);
+-- End$$
+-- Delimiter ;
+
+-- Select
+	-- client_id,
+    -- name,
+    -- get_risk_factor_for_client(client_id) AS risk_factor
+-- From clients;
+
