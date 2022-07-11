@@ -87,3 +87,27 @@
 -- Alter Event yearly_delete_stale_audit_rows DISABLE;
 
 
+
+-- Creating a Transaction --
+
+-- Use sql_store;
+
+-- Start Transaction;
+
+-- Insert Into orders (customer_id, order_date, status)
+-- Values (1, '2019-01-01', 1);
+
+-- Insert Into order_items
+-- Values (Last_Insert_ID(), 1, 1, 1);
+
+-- Commit;
+-- Rollback;
+
+
+-- Exercise: update the points of customer 1 with 10 additional points using a transaction
+
+-- Start Transaction;
+-- Update customers
+-- Set points = points + 10
+-- Where customer_id = 1;
+-- Commit;
