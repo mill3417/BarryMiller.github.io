@@ -1,0 +1,89 @@
+-- Triggers and Events --
+
+-- Delimiter $$
+
+-- Create Trigger payments_after_insert
+	-- After Insert On payments
+    -- For Each Row
+-- Begin
+	-- Update invoices
+    -- Set payment_total = payment_total + NEW.amount
+    -- Where invoice_id = New.invoice_id;
+-- End$$
+
+-- Delimiter ;
+
+-- Insert Into payments Values(Default, 5, 3, '2019-01-01', 10, 1)
+
+
+-- Exercise: Create a trigger that gets immediately fire when we delete a payment
+
+-- Delimiter $$
+
+-- Create Trigger payments_after_delete
+	-- After Delete On payments
+    -- For Each Row
+-- Begin
+	-- Update invoices
+    -- Set payment_total = payment_total - Old.amount
+    -- Where invoice_id = Old.invoice_id;
+-- End$$
+
+-- Delimiter ;
+
+-- Delete
+-- From payments
+-- Where payment_id = 10;
+
+
+-- Show Triggers Like 'payments%'
+
+
+-- Dropping Triggers --
+
+-- Drop Trigger if Exists payments_after_insert;
+
+
+
+-- Using Triggers for Auditing --
+
+-- Drop Trigger if Exists payments_after_insert;
+
+-- Delimiter $$
+-- Create Trigger payments_after_insert
+	-- After Insert On payments
+    -- For Each Row
+-- Begin
+	-- Update invoices
+    -- Set payment_total = payment_total + New.amount
+    -- Where invoice_id = New.invoice_id;
+    
+    -- Insert Into payments_audit
+    -- Values(New.client_id, new.date, new.amount, 'Insert', Now());
+-- End$$
+-- Delimiter ;
+
+
+
+-- Events --
+
+-- Delimiter $$
+
+-- Create Event yearly_delete_stale_audit_rows
+-- On Schedule
+	-- At '2019-05-01'(either this or the below)
+    -- Every 1 Year Starts '2019-01-01' Ends '2029-01-01' (either this or the above)
+-- Do Begin
+	-- Delete From payments_audit
+    -- Where action_date < Now() - Interval 1 Year;
+-- End$$
+
+-- Delimiter ;
+
+-- Show Events Like 'yearly%';
+
+-- Drop Event if Exists yearly_delete_stale_audit_rows;
+
+-- Alter Event yearly_delete_stale_audit_rows DISABLE;
+
+
